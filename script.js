@@ -105,64 +105,72 @@ const images = [
 
 
     // set images position
-    const imagesBoxs =  document.querySelectorAll('.image-box');
+    const imagesBoxs =  document.querySelectorAll('.image-box'),
+          clickSound = new Audio('sounds/click.wav'),
+          correctSound = new Audio('sounds/correct.wav'),
+          inCorrectSound = new Audio('sounds/incorrect.wav');
 
-    let selectStart = false;
 
-    let selectedImageOne,
-            selectedImageTwo,
-            selectedImageSrcOne,
-            selectedImageSrcTwo;
+    let selectStatus = false,
+        firstImage,
+        lastImage;
 
    imagesBoxs.forEach((box, index) => {
-        box.style.order = `order: ${getOrder()};`
+       // change boxs [images] order
+        box.style.order = getOrder();
 
-    box.addEventListener('click', () => {
-        
-        const clickSound = new Audio('sounds/click.wav');
-        clickSound.play();
+    box.addEventListener('click', (e) => {
 
-        if (!selectStart) {
-            selectStart = true;
-            
-            selectedImageSrcOne = box.querySelector('img').src;
+        // When select status false
+        if (!selectStatus) {
 
-            selectedImageOne = box.querySelector('img');
+            // Stop correct sound
+            stopSound(correctSound);
+            // make sound on image boxs clicked
+            clickSound.play();
+            // get the first selected box [image]
+            firstImage = box.querySelector('img');
 
-            // make images unclickalbe until check images finish
+            // selectedImageOne = box.querySelector('img');
+
+            // make image unclickalbe until check images finish
             box.style.pointerEvents = 'none';
+            // show image
+            firstImage.classList.add('active');
+            // change status
+            selectStatus = true;
 
-            selectedImageOne.classList.add('active');
-
-        } else if (selectStart) {
-            selectStart = false;
-            // make images unclickalbe until check images finish
+        } 
+        // When select status true
+        else if (selectStatus) {
+            // make all boxs [images] unclickable for 0.5s
             imagesBoxs.forEach((el) => {
                 el.style.pointerEvents = 'none';
             })
-
-            selectedImageTwo = box.querySelector('img');
-
-            selectedImageTwo.classList.add('active');
-
-            selectedImageSrcTwo = box.querySelector('img').src;
+            // get the last selected box [image]
+            lastImage = box.querySelector('img');
+            // show image
+            lastImage.classList.add('active');
+            // change status
+            selectStatus = false;
 
             setTimeout(() => {
-                if (selectedImageSrcOne == selectedImageSrcTwo) {
+                if (firstImage.src == lastImage.src) {
 
-                  // if selected images matched, correct class
-                  // will be added to make them visable
-                  selectedImageOne.classList.add("correct");
-                  selectedImageTwo.classList.add("correct");
+                // Make correct sound
+                correctSound.play();
 
-                  // remove active class [temprary class] &
-                  // set pointer-events to default
-                  removeClasses();
+                // make all box [image] clickable 
+                makeImagesClickable()
+
                 } else {
-
-                  // remove active class [temprary class] &
-                  // set pointer-events to default
-                  removeClasses();
+                // Make in-correct sound
+                inCorrectSound.play();
+                // make all box [image] clickable  
+                makeImagesClickable();
+                // reomve active class if boxs [images] not matched
+                firstImage.classList.remove('active');
+                lastImage.classList.remove('active');
                 }
             }, 500)
         }
@@ -173,17 +181,17 @@ const images = [
 
 
     function getOrder() {
-        // get ranom number to set images boxes order using order property
         const randomNumber = Math.floor(Math.random() * 40)
         return randomNumber;
     }
 
-    function removeClasses() {
+    function makeImagesClickable() {
         imagesBoxs.forEach((el) => {
-            // remove active class [temprary class] &
-            // set pointer-events to default
-            el.querySelector('img').classList.remove('active');
             el.style.pointerEvents = 'auto';
         })
     }
-
+    
+    function stopSound(sound) {
+        sound.pause();
+        sound.currentTime = 0;
+    }

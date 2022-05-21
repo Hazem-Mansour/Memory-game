@@ -36,6 +36,8 @@
     width: 100%;
     opacity: 0;
     pointer-events: none;
+    user-select: none;
+    transition: all .3s ease-out;
 }
 
 .image-box > img.active {
