@@ -80,36 +80,19 @@ const images = [
         "id": "20",
     },
 ], 
+
    imagesWrapper = document.querySelector('.images-wrapper');
-
-
-    function createImages() {
-        for (let i = 0; i < images.length; i++) {
-            const imageBox = document.createElement('div');
-            imageBox.classList.add('image-box');
-            const theImage = document.createElement('img');
-            theImage.src = images[i].name;
-            imageBox.appendChild(theImage)
-            imagesWrapper.appendChild(imageBox);
-        }
-        for (let i = 0; i < images.length; i++) {
-            const imageBox = document.createElement('div');
-            imageBox.classList.add('image-box');
-            const theImage = document.createElement('img');
-            theImage.src = images[i].name;
-            imageBox.appendChild(theImage)
-            imagesWrapper.appendChild(imageBox);
-        }
-    }
+    
+    // call function two times to dublicate images
+    createImages();
     createImages();
 
-
-    // set images position
+          // Get all box [images] after they created
     const imagesBoxs =  document.querySelectorAll('.image-box'),
+          // Get some sounds
           clickSound = new Audio('sounds/click.wav'),
           correctSound = new Audio('sounds/correct.wav'),
           inCorrectSound = new Audio('sounds/incorrect.wav');
-
 
     let selectStatus = false,
         firstImage,
@@ -159,19 +142,25 @@ const images = [
 
                 // Make correct sound
                 correctSound.play();
+                // add correct class
+                firstImage.parentElement.classList.add('correct');
+                lastImage.parentElement.classList.add('correct');
 
-                // make all box [image] clickable 
-                makeImagesClickable()
-
-                } else {
-                // Make in-correct sound
-                inCorrectSound.play();
-                // make all box [image] clickable  
-                makeImagesClickable();
                 // reomve active class if boxs [images] not matched
                 firstImage.classList.remove('active');
                 lastImage.classList.remove('active');
-                }
+                
+                // make all box [image] clickable 
+                makeImagesClickable()
+                } else {
+                // Make in-correct sound
+                inCorrectSound.play();
+                // reomve active class if boxs [images] not matched
+                firstImage.classList.remove('active');
+                lastImage.classList.remove('active');
+                // make all box [image] clickable  
+                makeImagesClickable();
+            }
             }, 500)
         }
     })
@@ -179,6 +168,16 @@ const images = [
     });
 
 
+    function createImages() {
+        for (let i = 0; i < images.length; i++) {
+            const imageBox = document.createElement('div');
+            imageBox.classList.add('image-box');
+            const theImage = document.createElement('img');
+            theImage.src = images[i].name;
+            imageBox.appendChild(theImage)
+            imagesWrapper.appendChild(imageBox);
+        }
+    }
 
     function getOrder() {
         const randomNumber = Math.floor(Math.random() * 40)
@@ -187,7 +186,9 @@ const images = [
 
     function makeImagesClickable() {
         imagesBoxs.forEach((el) => {
-            el.style.pointerEvents = 'auto';
+            if (!el.classList.contains('correct')) {
+                el.style.pointerEvents = 'auto';
+            }
         })
     }
     

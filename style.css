@@ -43,9 +43,13 @@
 .image-box > img.active {
     opacity: 1;
 }
-.image-box > img.correct {
+.image-box.correct {
+    pointer-events: none;
+}
+.image-box.correct > img {
     opacity: 1;
 }
+
 .controlls {
     width: fit-content;
     margin: 0 auto;
@@ -60,4 +64,14 @@
     font-size: 1.2rem;
     margin: 15px 0;
     cursor: pointer;
+}
+
+.info {
+    text-align: center;
+    font-size: 1.2rem;
+    font-family: sans-serif;
+    line-height: 1.7;
+}
+.info > p > span {
+    color: blueviolet;
 }
